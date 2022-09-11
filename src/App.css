@@ -1,0 +1,35 @@
+.App{
+    max-height: 100vh;
+}
+.grid-layout{
+    display: grid;
+    grid-template-columns: .9fr 4.1fr;
+}
+
+
+/* utility */
+.flex {
+    display: flex;
+}
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+.justify-between {
+    justify-content: space-between;
+}
+.justify-end {
+    justify-content: flex-end;
+}
+.align-center {
+    align-items: center;
+}

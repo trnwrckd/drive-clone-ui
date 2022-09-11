@@ -1,0 +1,99 @@
+.sidebar{
+    font-size: .8rem;
+    font-weight: 500;
+    color: rgb(95, 99, 104);
+    overflow-y: auto;
+}
+
+/* add new file/folder btn */
+.sidebar-btn{
+    margin: 12.5px 10px;
+    padding: 7.5px 10px;
+    padding-right: 35px;
+    border-radius: 25px;
+
+    border: none;
+    background-color: white;
+
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 22px;
+    cursor: pointer;
+
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+        rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    transition: .5s all;
+}
+.sidebar-btn:hover{
+    background-color: #F1F3F4;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 3px 0px, rgba(60, 64, 67, 0.15) 0px 1px 4px 1px;
+    
+}
+
+/* side nav */
+.sidebar-nav{
+    border-bottom: 1px solid lightgray;
+}
+.sidebar-nav-list{
+    list-style-type: none;
+    padding: 0;
+}
+.sidebar-nav-item{
+    padding: 7.5px 10px;
+    display: flex;
+    align-items: center;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    cursor: pointer;
+}
+.sidebar-nav-item-active{
+    background-color: #E8F0FE;
+    font-weight: 600;
+}
+.sidebar-nav-item-active>.sidebar-nav-link{
+    color: #185ABC;
+}
+.sidebar-nav-item:hover{
+    background-color: #efefef;
+}
+.sidebar-icon:nth-child(2){
+    margin-right: 15px;
+    margin-left: .2rem;
+}
+.sidebar-icon:first-child{
+    margin-left: 1rem;
+    margin-right: 15px;
+}
+.sidebar-extend-icon{
+    font-size: .8rem;
+}
+
+/* storage section */
+.sidebar-storage{
+    padding: 7.5px 10px;
+}
+.progress{
+    padding: 7.5px 1rem;
+}
+.progress>progress{
+    width: 100%;
+}
+.used-storage-text{
+    padding: 4.5px 0;
+    font-weight: 400;
+    display: block;
+}
+.btn-buy-storage{
+    color: #185ABC;
+    margin-left: 1rem;
+    padding: 7.5px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: .9rem;
+    background-color: white;
+    border: 1px solid lightgray;
+    cursor: pointer;
+}
+.btn-buy-storage:hover{
+    background-color: #f0f5ff;
+}
