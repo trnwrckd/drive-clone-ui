@@ -1,0 +1,34 @@
+.addons {
+    border-left: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.addons-container {
+    padding: 15px 1.5px;
+    border-bottom: 1px solid lightgray;
+}
+
+.addon-img-container {
+    border-radius: 50%;
+    padding: 5px 5px;
+    cursor: pointer;
+}
+
+.addon-img {
+    height: 20px;
+}
+
+.addon-img-container:hover {
+    background: rgba(60, 64, 67, .08);
+}
+
+.addon-img-container:not(:last-child) {
+    margin-bottom: 40px;
+}
+
+.addon-img-container:last-child {
+    margin-bottom: 20px;
+}

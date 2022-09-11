@@ -1,5 +1,6 @@
 .App{
     max-height: 100vh;
+    color: rgb(95, 99, 104);
 }
 .grid-layout{
     display: grid;
@@ -30,6 +31,14 @@
 .justify-end {
     justify-content: flex-end;
 }
+.justify-around {
+    justify-content: space-around;
+}
 .align-center {
     align-items: center;
+}
+
+.img-sm{
+    height: 20px;
+    padding: 5px 10px;
 }

@@ -1,7 +1,6 @@
 .sidebar{
     font-size: .8rem;
     font-weight: 500;
-    color: rgb(95, 99, 104);
     overflow-y: auto;
 }
 
@@ -15,7 +14,7 @@
     border: none;
     background-color: white;
 
-    font-size: 14px;
+    font-size: .9rem;
     font-weight: 500;
     line-height: 22px;
     cursor: pointer;
