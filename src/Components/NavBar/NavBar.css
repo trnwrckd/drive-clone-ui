@@ -30,17 +30,6 @@
     color: rgba(0, 0, 0, .54);
 }
 
-.icon{
-    color: rgb(95, 99, 104);
-    border-radius: 50%;
-    padding: 5px 5px;
-    display: inline-block;
-    cursor: pointer;
-}
-
-.icon:hover {
-    background: rgba(60, 64, 67, .08);
-}
 
 .nav-icon-group{
     margin: 0 2.5px;

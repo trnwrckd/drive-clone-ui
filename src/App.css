@@ -1,6 +1,7 @@
 .App{
     max-height: 100vh;
     color: rgb(95, 99, 104);
+    position: relative;
 }
 .grid-layout{
     display: grid;
@@ -39,6 +40,23 @@
 }
 
 .img-sm{
-    height: 20px;
+    height: 1rem;
+    width: 1rem;
     padding: 5px 10px;
+}
+
+.border-bottom{
+    border-bottom: 1px solid lightgray;
+}
+
+.icon {
+    color: rgb(95, 99, 104);
+    border-radius: 50%;
+    padding: 5px 5px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.icon:hover {
+    background: rgba(60, 64, 67, .08);
 }
