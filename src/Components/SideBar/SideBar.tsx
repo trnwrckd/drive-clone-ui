@@ -4,40 +4,47 @@ import docs from "../../Assets/g-docs.png"
 import sheets from "../../Assets/g-sheets.png"
 import slides from "../../Assets/g-slides.png"
 import forms from "../../Assets/g-forms.png"
+import { Folder } from "../../Folder"
 
 import "./SideBar.css"
 
-export default function SideBar() {
+export default function SideBar(props : any) {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showNewFolderModal, setShowNewFolderModal] = useState(false)
 
+
+
+    // const folderList : Folder[] = props.folderList
+    // console.log(folderList)
+
+  //   refs for modal
   const addModalRef = useRef<HTMLDivElement>(null)
   const addModalBtnRef = useRef<HTMLButtonElement>(null)
   const newFolderOverlayRef = useRef<HTMLDivElement>(null)
   const newFolderModalRef = useRef<HTMLDivElement>(null)
 
-  function handleClickOutsideModal(modal : string, target: Node): any {
+  function handleClickOutsideModal(modal: string, target: Node): any {
     // handle add btn clicked
-    if(modal === "add" && addModalRef.current && addModalBtnRef.current && !addModalRef.current.contains(target) && !addModalBtnRef.current.contains(target)){
-        setShowAddModal(false)
+    if (modal === "add" && addModalRef.current && addModalBtnRef.current && !addModalRef.current.contains(target) && !addModalBtnRef.current.contains(target)) {
+      setShowAddModal(false)
     }
-
     // handle create new folder modal
-    if(modal === "newFolder" && newFolderOverlayRef.current && newFolderModalRef.current && !newFolderModalRef.current.contains(target) && newFolderOverlayRef.current?.contains(target) ){
-        setShowNewFolderModal(false)
+    if (modal === "newFolder" && newFolderOverlayRef.current && newFolderModalRef.current && !newFolderModalRef.current.contains(target) && newFolderOverlayRef.current?.contains(target)) {
+      setShowNewFolderModal(false)
     }
   }
 
+    //   handle modal show effect
   useEffect(() => {
     if (showAddModal) {
       document.addEventListener("click", (e) => {
         handleClickOutsideModal("add", e.target as Node)
       })
     }
-    if(showNewFolderModal){
-       document.addEventListener("click", (e) => {
+    if (showNewFolderModal) {
+      document.addEventListener("click", (e) => {
         handleClickOutsideModal("newFolder", e.target as Node)
-      }) 
+      })
     }
     return () => {
       document.removeEventListener("click", (e) => {
@@ -47,7 +54,7 @@ export default function SideBar() {
         handleClickOutsideModal("newFolder", e.target as Node)
       })
     }
-  }, [showAddModal , showNewFolderModal])
+  }, [showAddModal, showNewFolderModal])
 
   return (
     <aside className="sidebar">
@@ -74,17 +81,23 @@ export default function SideBar() {
                   setShowNewFolderModal(true)
                   setShowAddModal(false)
                 }}>
-                <span className="material-symbols-outlined" style={{padding : " 0 5px"}}>create_new_folder</span>
+                <span className="material-symbols-outlined" style={{ padding: " 0 6px" }}>
+                  create_new_folder
+                </span>
                 <span>New Folder</span>
               </div>
             </div>
             <div className="border-bottom" role="button">
               <div className="add-modal-block">
-                <span className="material-symbols-outlined" style={{padding : " 0 5px"}}>upload_file</span>
+                <span className="material-symbols-outlined" style={{ padding: " 0 6px" }}>
+                  upload_file
+                </span>
                 <span>File upload</span>
               </div>
               <div className="add-modal-block" role="button">
-                <span className="material-symbols-outlined" style={{padding : " 0 5px"}}>drive_folder_upload</span>
+                <span className="material-symbols-outlined" style={{ padding: " 0 6px" }}>
+                  drive_folder_upload
+                </span>
                 <span>Folder upload</span>
               </div>
             </div>
@@ -160,21 +173,26 @@ export default function SideBar() {
         </div>
       </div>
       {/* storage ends*/}
-    {/* new folder modal */}
-      {showNewFolderModal &&
-      <div className="new-folder-modal-overlay flex-center" ref = {newFolderOverlayRef}>
-            <div className="new-folder-modal" ref={newFolderModalRef}>
-                <h2>New folder</h2>
-                <input type="text" name="folderName" id="folderName" placeholder="Untitled folder"/>
-                <div className="flex justify-end align-center">
-                    <button className="btn-cancel" onClick={()=>{
-                        setShowNewFolderModal(false)
-                    }}> Cancel</button>
-                    <button className="btn-create"> Create </button>
-                </div>
+      {/* new folder modal */}
+      {showNewFolderModal && (
+        <div className="new-folder-modal-overlay flex-center" ref={newFolderOverlayRef}>
+          <div className="new-folder-modal" ref={newFolderModalRef}>
+            <h2>New folder</h2>
+            <input type="text" name="folderName" id="folderName" placeholder="Untitled folder" />
+            <div className="flex justify-end align-center">
+              <button
+                className="btn-cancel"
+                onClick={() => {
+                  setShowNewFolderModal(false)
+                }}>
+                {" "}
+                Cancel
+              </button>
+              <button className="btn-create"> Create </button>
             </div>
-      </div>
-      }
+          </div>
+        </div>
+      )}
     </aside>
   )
 }

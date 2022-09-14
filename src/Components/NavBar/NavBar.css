@@ -4,6 +4,10 @@
     display: grid;
     grid-template-columns: .9fr 3.1fr 1fr;
 }
+.nav-link-home{
+    cursor: pointer;
+    text-decoration: none;
+}
 
 .logo{
     height: 35px;

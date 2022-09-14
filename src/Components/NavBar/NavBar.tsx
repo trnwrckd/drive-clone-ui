@@ -7,10 +7,10 @@ import profilePicture from '../../Assets/profile-picture.jpg'
 export default function NavBar() {
   return (
     <nav className='nav-container'> 
-        <div className = "flex align-center">
+        <a href="/" className='nav-link-home flex align-center'>
             <img className='logo' src={logo} alt="Google Drive Logo"/> 
             <span className='app-title'>Drive</span>
-        </div>  
+        </a>
         
         <div className='search-bar'>
             <div className = "flex justify-between align-center"> 

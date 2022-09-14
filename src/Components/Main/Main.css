@@ -8,10 +8,21 @@
 .route{
     border-bottom: 1px solid lightgray;
     height: 50px;
-    padding: 0 20px;
+    /* padding: 0 15px; */
 }
 
-.route-text{
+.route-link{
     font-size: 1.1rem;
+}
+
+.route-current:hover, .route-link:hover .route-name{
+    background-color: rgba(211, 211, 211, 0.3);
+    cursor: pointer;
+    border-radius: 7px;
+}
+
+.route-name{
+    font-size: 1.1rem;
+    padding: 5px 7.5px;
 }
 

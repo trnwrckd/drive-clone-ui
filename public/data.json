@@ -1,0 +1,73 @@
+[
+  {
+    "_id": "63207c7567ed8fa3fccfaa85",
+    "name": "folder1",
+    "type": "folder",
+    "level": 1,
+    "ancestors": [
+      {
+        "id": "-1",
+        "name": "My drive"
+      }
+    ],
+    "parent": "-1"
+  },
+  {
+    "_id": "63207c7567ed8fa3fccfaa86",
+    "name": "folder2",
+    "type": "folder",
+    "level": 2,
+    "ancestors": [
+      {
+        "id": "-1",
+        "name": "My drive"
+      },
+      {
+        "id": "63207c7567ed8fa3fccfaa85",
+        "name": "folder1"
+      }
+    ],
+    "parent": "63207c7567ed8fa3fccfaa85"
+  },
+  {
+    "_id": "63207c7567ed8fa3fccfaa87",
+    "name": "folder3",
+    "type": "folder",
+    "level": 3,
+    "ancestors": [
+      {
+        "id": "-1",
+        "name": "My drive"
+      },
+      {
+        "id": "63207c7567ed8fa3fccfaa85",
+        "name": "folder1"
+      },
+      {
+        "id": "63207c7567ed8fa3fccfaa86",
+        "name": "folder2"
+      }
+    ],
+    "parent": "63207c7567ed8fa3fccfaa86"
+  },
+  {
+    "_id": "632095b0ed5f777627dad137",
+    "name": "folder6",
+    "type": "folder",
+    "level": 1,
+    "ancestors": [
+      {
+        "id": "-1",
+        "name": "My drive"
+      }
+    ],
+    "parent": "-1"
+  },
+  {
+    "_id": "-1",
+    "name": "My Drive",
+    "type": "folder",
+    "ancestors": [],
+    "level": 0
+  }
+]
