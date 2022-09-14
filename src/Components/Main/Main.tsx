@@ -2,10 +2,11 @@ import { useContext} from 'react'
 import Addons from './Addons/Addons'
 import NoFiles from './NoFiles/NoFiles'
 import { DriveContext } from '../../Contexts/driveContext'
+import OutsideClickHandler from 'react-outside-click-handler'
 import './Main.css'
 
 export default function Main() {
-  const {currentFolder, folderContent , setCurrentFolder , getFolderDetails} = useContext(DriveContext)
+  const {currentFolder, folderContent , setCurrentFolder , getFolderDetails , selected , setSelected} = useContext(DriveContext)
 
   return (
     <div className='main-container'>
@@ -41,8 +42,18 @@ export default function Main() {
 
         {/* icons */}
         <div>
-          <span className='material-symbols-outlined icon' style={{marginRight : "15px"}}>reorder</span>
-          <span className='material-symbols-outlined icon'>info</span>
+          {/* show update and delete options when something is selected */}
+          {
+            selected !== null &&
+          <span style={{marginRight : "30px"}}>
+            <span className='material-symbols-outlined icon' style={{marginRight : "15px"}}>edit</span>
+            <span className='material-symbols-outlined icon'>delete</span>
+          </span>
+          }
+          <span style={{marginRight : "15px"}}>
+            <span className='material-symbols-outlined icon' style={{marginRight : "15px"}}>reorder</span>
+            <span className='material-symbols-outlined icon'>info</span>
+          </span>
         </div>
       </div>
 
@@ -50,11 +61,23 @@ export default function Main() {
       {
         folderContent===undefined  ? <NoFiles/> :
         folderContent.map(f => 
-        <div key ={f._id} onDoubleClick={()=>{
-          setCurrentFolder(f)
-        }}>
-            {f.name}
-        </div>
+          <OutsideClickHandler
+          onOutsideClick = {()=>{
+              setSelected(null)
+            }}
+            >
+              <div key ={f._id} onDoubleClick={()=>{
+              if(f.type === "folder")
+                setCurrentFolder(f)
+            }}
+            onClick ={()=>{
+              setSelected(f)
+            }}
+            >
+                {f.name}
+            </div>
+            
+          </OutsideClickHandler>
         )
       }
       

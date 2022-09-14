@@ -1,28 +1,33 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useContext } from "react"
 import addIcon from "../../Assets/add-icon.png"
 import docs from "../../Assets/g-docs.png"
 import sheets from "../../Assets/g-sheets.png"
 import slides from "../../Assets/g-slides.png"
 import forms from "../../Assets/g-forms.png"
-import { Folder } from "../../Folder"
+import { DriveContext } from "../../Contexts/driveContext"
 
 import "./SideBar.css"
 
-export default function SideBar(props : any) {
+
+export default function SideBar() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showNewFolderModal, setShowNewFolderModal] = useState(false)
+  const [folderName, setFolderName] = useState("Untitled Folder")
 
-
-
-    // const folderList : Folder[] = props.folderList
-    // console.log(folderList)
+  // use Context
+  const {  upload , uploadSelectedFolder , uploadSuccess, setUploadSuccess} = useContext(DriveContext)
 
   //   refs for modal
   const addModalRef = useRef<HTMLDivElement>(null)
   const addModalBtnRef = useRef<HTMLButtonElement>(null)
   const newFolderOverlayRef = useRef<HTMLDivElement>(null)
   const newFolderModalRef = useRef<HTMLDivElement>(null)
+  //   refs for file upload
+  const fileUploadRef = useRef<HTMLInputElement>(null)
+  const folderUploadRef = useRef<HTMLInputElement>(null)
+  const otherAtt = { directory: "", webkitdirectory: ""}
 
+  //   close modal when clicked outside
   function handleClickOutsideModal(modal: string, target: Node): any {
     // handle add btn clicked
     if (modal === "add" && addModalRef.current && addModalBtnRef.current && !addModalRef.current.contains(target) && !addModalBtnRef.current.contains(target)) {
@@ -34,18 +39,26 @@ export default function SideBar(props : any) {
     }
   }
 
-    //   handle modal show effect
+  //   show / hide modal
   useEffect(() => {
+    // if file gets uploaded successfully
+    if (uploadSuccess) {
+      setShowNewFolderModal(false)
+      setUploadSuccess(false)
+    }
+    // show add modal
     if (showAddModal) {
       document.addEventListener("click", (e) => {
         handleClickOutsideModal("add", e.target as Node)
       })
     }
+    // show new folder modal
     if (showNewFolderModal) {
       document.addEventListener("click", (e) => {
         handleClickOutsideModal("newFolder", e.target as Node)
       })
     }
+    // destroy eventlistener on unmount
     return () => {
       document.removeEventListener("click", (e) => {
         handleClickOutsideModal("add", e.target as Node)
@@ -54,7 +67,7 @@ export default function SideBar(props : any) {
         handleClickOutsideModal("newFolder", e.target as Node)
       })
     }
-  }, [showAddModal, showNewFolderModal])
+  }, [setUploadSuccess, showAddModal, showNewFolderModal, uploadSuccess])
 
   return (
     <aside className="sidebar">
@@ -88,17 +101,43 @@ export default function SideBar(props : any) {
               </div>
             </div>
             <div className="border-bottom" role="button">
-              <div className="add-modal-block">
+              <div className="add-modal-block"
+                role="button"
+                onClick={()=>{
+                  fileUploadRef?.current?.click()
+                }}
+              >
                 <span className="material-symbols-outlined" style={{ padding: " 0 6px" }}>
                   upload_file
                 </span>
                 <span>File upload</span>
+                {/* file upload input */}
+                <input type="file" ref={fileUploadRef} style={{display : "none"}}
+                onChange={(e)=>{
+                  if(e.target.files){
+                    upload(e.target.files[0].name , "file")
+                  }
+                }}
+                />
               </div>
-              <div className="add-modal-block" role="button">
+              <div className="add-modal-block" 
+              role="button"
+              onClick={()=>{
+                  folderUploadRef?.current?.click()
+                }}
+              >
                 <span className="material-symbols-outlined" style={{ padding: " 0 6px" }}>
                   drive_folder_upload
                 </span>
                 <span>Folder upload</span>
+                {/* folder upload input */}
+                <input type="file" ref={folderUploadRef} {...otherAtt} style={{display : "none"}}
+                onChange={(e)=>{
+                  if(e.target.files){
+                    uploadSelectedFolder(e.target.files)
+                  }
+                }}
+                multiple/>
               </div>
             </div>
 
@@ -126,6 +165,7 @@ export default function SideBar(props : any) {
           </div>
         )}
       </div>
+
       {/* side nav */}
       <div className="sidebar-nav">
         <ul className="sidebar-nav-list">
@@ -157,7 +197,7 @@ export default function SideBar(props : any) {
           </li>
         </ul>
       </div>
-      {/* side nav ends*/}
+
       {/* storage */}
       <div className="sidebar-storage flex-col justify-center">
         <div className="flex align-center">
@@ -172,13 +212,21 @@ export default function SideBar(props : any) {
           <button className="btn-buy-storage">Buy Storage</button>
         </div>
       </div>
-      {/* storage ends*/}
+
       {/* new folder modal */}
       {showNewFolderModal && (
         <div className="new-folder-modal-overlay flex-center" ref={newFolderOverlayRef}>
           <div className="new-folder-modal" ref={newFolderModalRef}>
             <h2>New folder</h2>
-            <input type="text" name="folderName" id="folderName" placeholder="Untitled folder" />
+            <input
+              type="text"
+              name="folderName"
+              id="folderName"
+              placeholder="Untitled folder"
+              onBlur={(e) => {
+                setFolderName(e.target.value)
+              }}
+            />
             <div className="flex justify-end align-center">
               <button
                 className="btn-cancel"
@@ -188,7 +236,14 @@ export default function SideBar(props : any) {
                 {" "}
                 Cancel
               </button>
-              <button className="btn-create"> Create </button>
+              <button
+                className="btn-create"
+                onClick={() => {
+                  upload(folderName , "folder")
+                }}>
+                {" "}
+                Create{" "}
+              </button>
             </div>
           </div>
         </div>

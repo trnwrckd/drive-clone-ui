@@ -1,10 +1,10 @@
-interface Ancestor{
+export interface Ancestor{
     "id" : string,
     "name" : string
 }
 
 export interface Folder{
-    "_id" : any,
+    "_id" ?: any,
     "name" : string,
     "type" : string,
     "level" : number,
