@@ -143,7 +143,10 @@ export default function Main() {
               key={f._id}
               onDoubleClick={() => {
                 console.log(selected?._id)
-                if (f.type === "folder") setCurrentFolder(f)
+                if (f.type === "folder"){
+                  setCurrentFolder(f)
+                  localStorage.setItem("currentFolder" , JSON.stringify(f))
+                }
               }}
               onClick={() => {
                 setSelected(f)

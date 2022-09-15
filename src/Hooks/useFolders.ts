@@ -6,9 +6,14 @@ export const useFolders = () =>{
 
     const apiURL = 'https://nameless-savannah-03121.herokuapp.com'
 
+    let contentFromLocalStorage = localStorage.getItem('folderContent')
+    let currentFolderFromLocalStorage = localStorage.getItem('currentFolder')
+
+
     const [folderList, setFolderList] = useState<Folder[]>([])
-    const [folderContent, setFolderContent] = useState<Folder[]>([])
-    const [currentFolder, setCurrentFolder] = useState<Folder | null>(null)
+    const [folderContent, setFolderContent] = useState<Folder[]>( contentFromLocalStorage ? JSON.parse(contentFromLocalStorage) : [] )
+    const [currentFolder, setCurrentFolder] = useState<Folder | null>( currentFolderFromLocalStorage  ? JSON.parse(currentFolderFromLocalStorage) : null)
+
     const [uploadSuccess, setUploadSuccess] = useState<boolean>(false)
 
     const [parentFolderOfMultipleFileUpload, setParentFolderOfMultipleFileUpload] = useState<Folder | null>(null)
@@ -23,7 +28,14 @@ export const useFolders = () =>{
         fetch(`${apiURL}/folderDetails/${id}`)
         .then(res => res.json())
         .then(data => {
-            setCurrentFolder(data[0])
+            console.log(data)
+            if(id === "-1"){
+                setCurrentFolder(data)
+                localStorage.setItem('currentFolder', JSON.stringify(data))
+            }else{
+                setCurrentFolder(data[0])
+                localStorage.setItem('currentFolder', JSON.stringify(data[0]))
+            }
         }) 
     }
 
@@ -31,7 +43,10 @@ export const useFolders = () =>{
     const getFolderContent = (parent : string = "-1") => {
         fetch(`${apiURL}/folders/${parent}`)
         .then(res => res.json())
-        .then(data => setFolderContent(data))  
+        .then(data => {
+            setFolderContent(data)
+            localStorage.setItem('folderContent', JSON.stringify(data))
+        })  
     }
 
     // upload file/folder
@@ -86,6 +101,7 @@ export const useFolders = () =>{
         const content = [...folderContent] 
         content.push(folder)
         setFolderContent(content)
+        localStorage.setItem("folderContent" , JSON.stringify(content))
     }
     
     // upload folder with possibly multiple files inside
@@ -136,6 +152,7 @@ export const useFolders = () =>{
                 console.log("deleted" , data.deletedCount)
                 const newContent = folderContent.filter(folder => folder._id !== id);
                 setFolderContent(newContent);
+                localStorage.setItem("folderContent" , JSON.stringify(newContent))
             }
         });
         
