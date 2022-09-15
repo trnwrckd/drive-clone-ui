@@ -3,6 +3,7 @@
     grid-template-columns: 10fr .5fr;
     padding: 0 10px;
     height: 88vh;
+    overflow-y: auto;
 }
 
 .route{
@@ -16,7 +17,7 @@
 }
 
 .route-current:hover, .route-link:hover .route-name{
-    background-color: rgba(211, 211, 211, 0.3);
+    background-color: #d3d3d34d;
     cursor: pointer;
     border-radius: 7px;
 }
@@ -26,3 +27,64 @@
     padding: 5px 7.5px;
 }
 
+/* folder grid */
+.grid-section-heading{
+    font-size: .8rem;
+    padding: 20px 10px;
+    font-weight: 500;
+}
+
+.folder-grid{
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 1rem;
+    padding: 5px 10px;
+}
+.grid-item{
+    border: 1px solid lightgray;
+    padding: 10px 10px;
+    border-radius: 5px;
+    font-size: .9rem;
+    cursor: default;
+    font-weight: 500;
+}
+.grid-item:hover{
+    background-color: #d3d3d34d;
+}
+.grid-item-selected{
+    background-color: #e8f0ff;
+}
+.grid-item-selected .grid-item-name{
+    color: #185ABC;
+}
+
+/* modal btns */
+.btn-cancel-rename,
+.btn-rename ,.btn-delete{
+    border: none;
+    border-radius: 3px;
+    background-color: transparent;
+    padding: 7.5px 10px;
+    min-width: 60px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: .5s all;
+}
+.btn-cancel-rename{
+    margin-right: 15px;
+}
+
+
+.btn-cancel-rename:hover, .btn-rename:hover , .btn-delete:hover{
+    box-shadow: 0px 2px 0px 1px lightgray;
+}
+.btn-rename{
+    background-color: #185ABC;
+    color: white;
+}
+.btn-delete{
+    background-color: #cf3340;
+    color: white;
+}

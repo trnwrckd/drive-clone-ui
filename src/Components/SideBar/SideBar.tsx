@@ -7,11 +7,13 @@ import forms from "../../Assets/g-forms.png"
 import { DriveContext } from "../../Contexts/driveContext"
 
 import "./SideBar.css"
+import { Folder, MyDrive } from "../../Models"
 
 export default function SideBar() {
   const [showAddModal, setShowAddModal] = useState<boolean>(false)
   const [showNewFolderModal, setShowNewFolderModal] = useState<boolean>(false)
   const [folderName, setFolderName] = useState<string>("Untitled Folder")
+  const [selectedDirectory, setSelectedDirectory] = useState<Folder | null>(null)
 
   // use Context
   const { upload, uploadSelectedFolder, uploadSuccess, setUploadSuccess, getFolderDetails, tree, getTree } = useContext(DriveContext)
@@ -44,13 +46,12 @@ export default function SideBar() {
     const target = e.target as HTMLSpanElement
     // if not expanded, expand. add elements to array whose parent match this id
     if (!target.classList.contains("rotated-icon")) {
-      console.log("will expand")
+
       target.classList.add("rotated-icon")
       getTree(id, true)
     }
     // if expanded, shrink. remove elements from array whose parent match this id
     else {
-      console.log("will shrink")
       target.classList.remove("rotated-icon")
       getTree(id, false)
     }
@@ -100,7 +101,7 @@ export default function SideBar() {
           <span style={{ marginLeft: "15px" }}>New</span>
         </button>
 
-        {/* add modal */}
+        {/* add new file/folder/upload modal */}
         {showAddModal && (
           <div className="add-modal" ref={addModalRef}>
             <div className="border-bottom">
@@ -136,6 +137,7 @@ export default function SideBar() {
                   onChange={(e) => {
                     if (e.target.files) {
                       upload(e.target.files[0].name, "file")
+                      setShowAddModal(false)
                     }
                   }}
                 />
@@ -159,6 +161,7 @@ export default function SideBar() {
                   onChange={(e) => {
                     if (e.target.files) {
                       uploadSelectedFolder(e.target.files)
+                      setShowAddModal(false)
                     }
                   }}
                   multiple
@@ -194,7 +197,7 @@ export default function SideBar() {
       {/* side nav */}
       <div className="sidebar-nav">
         <ul className="sidebar-nav-list">
-          <li className="sidebar-nav-item">
+          <li className={selectedDirectory && selectedDirectory._id === "-1" ? "sidebar-nav-item selected-directory" : "sidebar-nav-item"} >
             {/* directory tree */}
             <span
               className="material-icons sidebar-extend-icon"
@@ -206,33 +209,35 @@ export default function SideBar() {
             <span className="material-symbols-outlined sidebar-icon">folder</span>
             <span
               className="sidebar-nav-link"
-              onClick={(e) => {
-                const target = e.target as HTMLSpanElement
-                target.parentElement?.classList.add("selected-directory")
+              onClick={() => {
+                setSelectedDirectory(MyDrive)
                 getFolderDetails("-1")
               }}>
               My Drive
             </span>
           </li>
+
+          {/* tree begins here */}
           {/* directory tree */}
           {tree.length !== 0 && (
             <ul className="sidebar-nav-list">
               {tree.map((t) => (
                 t.type === "folder" &&
-                <li className="sidebar-nav-item" key={t._id} style={{ paddingLeft: `${t.level * 10}px` }}>
+                <li 
+                className={selectedDirectory && selectedDirectory._id === t._id ? "sidebar-dir-item selected-directory not-root" : "sidebar-dir-item"} 
+                key={t._id} style={{ paddingLeft: `${t.level * 12}px` }}>
                   <span
-                    className="material-icons sidebar-extend-icon"
+                    className= "material-icons sidebar-extend-icon"
                     onClick={(e) => {
                       handleExpandTree(e, t._id)
                     }}>
                     play_arrow
                   </span>
-                  <span className="material-symbols-outlined sidebar-icon">folder</span>
+                  <span className="material-icons sidebar-icon">folder</span>
                   <span
                     className="sidebar-nav-link"
-                    onClick={(e) => {
-                      const target = e.target as HTMLSpanElement
-                      target.parentElement?.classList.add("selected-directory")
+                    onClick={() => {
+                      setSelectedDirectory(t)
                       getFolderDetails(t._id)
                     }}>
                     {t.name}
@@ -282,9 +287,9 @@ export default function SideBar() {
 
       {/* new folder modal */}
       {showNewFolderModal && (
-        <div className="new-folder-modal-overlay flex-center" ref={newFolderOverlayRef}>
-          <div className="new-folder-modal" ref={newFolderModalRef}>
-            <h2>New folder</h2>
+        <div className="modal-overlay flex-center" ref={newFolderOverlayRef}>
+          <div className="modal" ref={newFolderModalRef}>
+            <h2 className="modal-heading">New folder</h2>
             <input
               type="text"
               name="folderName"

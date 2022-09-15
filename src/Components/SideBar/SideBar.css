@@ -11,7 +11,7 @@
     padding: 7.5px 10px;
     padding-right: 35px;
     border-radius: 25px;
-
+    
     border: none;
     background-color: white;
 
@@ -19,12 +19,12 @@
     font-weight: 500;
     line-height: 22px;
     cursor: pointer;
-
+    
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
         rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-    transition: .5s all;
-}
-.sidebar-btn:hover{
+        transition: .5s all;
+    }
+    .sidebar-btn:hover{
     background-color: #F1F3F4;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 3px 0px, rgba(60, 64, 67, 0.15) 0px 3px 4px 3px;
     
@@ -71,6 +71,14 @@
     border-bottom-right-radius: 25px;
     cursor: pointer;
 }
+.sidebar-dir-item{
+    padding: 3px 10px;
+    display: flex;
+    align-items: center;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    cursor: pointer;
+}
 .sidebar-nav-item-active{
     background-color: #E8F0FE;
     font-weight: 600;
@@ -78,16 +86,16 @@
 .sidebar-nav-item-active>.sidebar-nav-link{
     color: #185ABC;
 }
-.sidebar-nav-item:hover{
+.sidebar-nav-item:hover , .sidebar-dir-item:hover{
     background-color: #efefef;
 }
 .sidebar-icon:nth-child(2){
-    margin-right: 15px;
+    margin-right: 10px;
     margin-left: .2rem;
 }
 .sidebar-icon:first-child{
     margin-left: 1rem;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 .sidebar-extend-icon{
     font-size: .8rem;
@@ -113,47 +121,14 @@
     margin-left: 1rem;
     padding: 7.5px 20px;
     border-radius: 5px;
-    font-weight: 500;
     font-size: .9rem;
+    font-weight: 500;
     background-color: white;
     border: 1px solid lightgray;
     cursor: pointer;
 }
 .btn-buy-storage:hover{
-    background-color: #f0f5ff;
-}
-
-
-/* new folder modal */
-.new-folder-modal-overlay{
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100%;
-    z-index : 2;
-    background-color: rgba(0, 0, 0, 0.40);
-}
-.new-folder-modal{
-    background-color: white;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 1rem;
-}
-
-.new-folder-modal input{
-    border-radius: 5px;
-    border: 1px solid lightgray;
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    width: 250px;
-}
-.new-folder-modal input:hover{
-    border: 1px solid black;
-}
-.new-folder-modal input:focus{
-    outline: 1px solid rgb(2, 2, 219);
-    border: 1px solid rgb(0, 0, 219);
+    background-color: #e8f0ff;
 }
 
 .btn-cancel, .btn-create{
@@ -166,7 +141,7 @@
     cursor: pointer;
 }
 .btn-create{
-    color: blue;
+    color: #0202db;
 }
 
 .btn-cancel:hover, .btn-create:hover{
@@ -179,4 +154,9 @@
 }
 .selected-directory{
     color: #185ABC;
+    font-weight: 600;
+    background-color: #E8F0FE;
+}
+.not-root span:not(:nth-child(3)){
+    color: #5f6368;
 }

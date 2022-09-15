@@ -4,11 +4,8 @@ import Main from './Components/Main/Main';
 import {DriveProvider} from './Contexts/driveContext'
 import './App.css'
 
-import { useFolders } from './Hooks/useFolders'
 
 function App() {
-
-  // const {folderList , folderContent} = useFolders()
 
   return (
     <div className="App">

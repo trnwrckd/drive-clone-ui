@@ -7,3 +7,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button{
+  font-family: 'Roboto', sans-serif;
+  color: rgb(95, 99, 104);
+}
+

@@ -1,5 +1,5 @@
 import React, {ReactNode, createContext} from 'react'
-import { Folder } from '../Folder';
+import { Folder } from '../Models';
 import { useFolders } from '../Hooks/useFolders'
 
 
