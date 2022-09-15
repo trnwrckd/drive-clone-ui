@@ -8,6 +8,7 @@ export const useFolders = () =>{
 
     let contentFromLocalStorage = localStorage.getItem('folderContent')
     let currentFolderFromLocalStorage = localStorage.getItem('currentFolder')
+    let treeFromLocalStorage = localStorage.getItem('tree')
 
 
     const [folderList, setFolderList] = useState<Folder[]>([])
@@ -18,6 +19,8 @@ export const useFolders = () =>{
 
     const [parentFolderOfMultipleFileUpload, setParentFolderOfMultipleFileUpload] = useState<Folder | null>(null)
     const [files , setFiles] = useState<FileList | null> (null)
+    // directory tree
+    const [tree, setTree] = useState<Folder[]>( treeFromLocalStorage ? JSON.parse(treeFromLocalStorage) : [])
 
     const [selected , setSelected] = useState<Folder | null>(null)
 
@@ -28,7 +31,6 @@ export const useFolders = () =>{
         fetch(`${apiURL}/folderDetails/${id}`)
         .then(res => res.json())
         .then(data => {
-            console.log(data)
             if(id === "-1"){
                 setCurrentFolder(data)
                 localStorage.setItem('currentFolder', JSON.stringify(data))
@@ -158,9 +160,52 @@ export const useFolders = () =>{
         
     }
 
+    // get updated tree on directory click
+    const getTree = (parent : string , expand : boolean) =>{
+        // expand tree
+        if(expand){
+            fetch(`${apiURL}/folders/${parent}`)
+            .then(res => res.json())
+            .then(data => {
+                // insert children after parent if there are already elements in tree
+                if(tree.length > 0){
+                    // find parent index
+                    const  index = tree.findIndex( t =>{
+                        return t._id === parent
+                    })
+                    const newTree = [...tree]
+                    
+                    // insert fetched data after parent
+                    data.forEach((element : Folder) => {
+                        // if already exists, don't insert
+                        
+                        if(newTree.find(el => el._id === element._id) === undefined){
+                            newTree.splice(index+1, 0 , element)
+                        }
+                    });
+                    
+                    setTree(newTree)
+                    localStorage.setItem('tree', JSON.stringify(newTree))
+                }
+                else{
+                    setTree(data)
+                    localStorage.setItem('tree', JSON.stringify(data))
+                }
+            }) 
+        }
+        // shrink tree
+        else{
+            const newTree = tree.filter(elem =>{
+                return (elem.ancestors.every(e => e.id !== parent)) 
+            })
+            setTree(newTree)
+            localStorage.setItem('tree', JSON.stringify(newTree))
+        }
+    }
+
     // set all folders
     useEffect(()=>{
-        fetch('${apiURL}/folders')
+        fetch(`${apiURL}/folders`)
         .then(res => res.json())
         .then(data => setFolderList(data))        
     }, [])
@@ -185,5 +230,7 @@ export const useFolders = () =>{
 
     return {folderList , folderContent , setFolderContent, 
         currentFolder, setCurrentFolder , getFolderDetails , upload
-        , uploadSuccess , setUploadSuccess , uploadSelectedFolder , setSelected , selected , triggerUpdate , triggerDelete}
+        , uploadSuccess , setUploadSuccess , uploadSelectedFolder ,
+         setSelected , selected , triggerUpdate , triggerDelete,
+        tree, getTree}
 }

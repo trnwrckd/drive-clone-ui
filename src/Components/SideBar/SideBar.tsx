@@ -8,27 +8,28 @@ import { DriveContext } from "../../Contexts/driveContext"
 
 import "./SideBar.css"
 
-
 export default function SideBar() {
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [showNewFolderModal, setShowNewFolderModal] = useState(false)
-  const [folderName, setFolderName] = useState("Untitled Folder")
+  const [showAddModal, setShowAddModal] = useState<boolean>(false)
+  const [showNewFolderModal, setShowNewFolderModal] = useState<boolean>(false)
+  const [folderName, setFolderName] = useState<string>("Untitled Folder")
 
   // use Context
-  const {  upload , uploadSelectedFolder , uploadSuccess, setUploadSuccess} = useContext(DriveContext)
+  const { upload, uploadSelectedFolder, uploadSuccess, setUploadSuccess, getFolderDetails, tree, getTree } = useContext(DriveContext)
 
   //   refs for modal
   const addModalRef = useRef<HTMLDivElement>(null)
   const addModalBtnRef = useRef<HTMLButtonElement>(null)
   const newFolderOverlayRef = useRef<HTMLDivElement>(null)
   const newFolderModalRef = useRef<HTMLDivElement>(null)
-  //   refs for file upload
+  //   refs for file upload input elem
   const fileUploadRef = useRef<HTMLInputElement>(null)
   const folderUploadRef = useRef<HTMLInputElement>(null)
-  const otherAtt = { directory: "", webkitdirectory: ""}
+
+  // attribute for multiple file upload
+  const otherAtt = { directory: "", webkitdirectory: "" }
 
   //   close modal when clicked outside
-  function handleClickOutsideModal(modal: string, target: Node): any {
+  const handleClickOutsideModal = (modal: string, target: Node): void => {
     // handle add btn clicked
     if (modal === "add" && addModalRef.current && addModalBtnRef.current && !addModalRef.current.contains(target) && !addModalBtnRef.current.contains(target)) {
       setShowAddModal(false)
@@ -36,6 +37,22 @@ export default function SideBar() {
     // handle create new folder modal
     if (modal === "newFolder" && newFolderOverlayRef.current && newFolderModalRef.current && !newFolderModalRef.current.contains(target) && newFolderOverlayRef.current?.contains(target)) {
       setShowNewFolderModal(false)
+    }
+  }
+
+  const handleExpandTree = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
+    const target = e.target as HTMLSpanElement
+    // if not expanded, expand. add elements to array whose parent match this id
+    if (!target.classList.contains("rotated-icon")) {
+      console.log("will expand")
+      target.classList.add("rotated-icon")
+      getTree(id, true)
+    }
+    // if expanded, shrink. remove elements from array whose parent match this id
+    else {
+      console.log("will shrink")
+      target.classList.remove("rotated-icon")
+      getTree(id, false)
     }
   }
 
@@ -101,43 +118,51 @@ export default function SideBar() {
               </div>
             </div>
             <div className="border-bottom" role="button">
-              <div className="add-modal-block"
+              <div
+                className="add-modal-block"
                 role="button"
-                onClick={()=>{
+                onClick={() => {
                   fileUploadRef?.current?.click()
-                }}
-              >
+                }}>
                 <span className="material-symbols-outlined" style={{ padding: " 0 6px" }}>
                   upload_file
                 </span>
                 <span>File upload</span>
                 {/* file upload input */}
-                <input type="file" ref={fileUploadRef} style={{display : "none"}}
-                onChange={(e)=>{
-                  if(e.target.files){
-                    upload(e.target.files[0].name , "file")
-                  }
-                }}
+                <input
+                  type="file"
+                  ref={fileUploadRef}
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      upload(e.target.files[0].name, "file")
+                    }
+                  }}
                 />
               </div>
-              <div className="add-modal-block" 
-              role="button"
-              onClick={()=>{
+              <div
+                className="add-modal-block"
+                role="button"
+                onClick={() => {
                   folderUploadRef?.current?.click()
-                }}
-              >
+                }}>
                 <span className="material-symbols-outlined" style={{ padding: " 0 6px" }}>
                   drive_folder_upload
                 </span>
                 <span>Folder upload</span>
                 {/* folder upload input */}
-                <input type="file" ref={folderUploadRef} {...otherAtt} style={{display : "none"}}
-                onChange={(e)=>{
-                  if(e.target.files){
-                    uploadSelectedFolder(e.target.files)
-                  }
-                }}
-                multiple/>
+                <input
+                  type="file"
+                  ref={folderUploadRef}
+                  {...otherAtt}
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      uploadSelectedFolder(e.target.files)
+                    }
+                  }}
+                  multiple
+                />
               </div>
             </div>
 
@@ -170,10 +195,52 @@ export default function SideBar() {
       <div className="sidebar-nav">
         <ul className="sidebar-nav-list">
           <li className="sidebar-nav-item">
-            <span className="material-icons sidebar-extend-icon">play_arrow</span>
+            {/* directory tree */}
+            <span
+              className="material-icons sidebar-extend-icon"
+              onClick={(e) => {
+                handleExpandTree(e, "-1")
+              }}>
+              play_arrow
+            </span>
             <span className="material-symbols-outlined sidebar-icon">folder</span>
-            <span className="sidebar-nav-link">My Drive</span>
+            <span
+              className="sidebar-nav-link"
+              onClick={(e) => {
+                const target = e.target as HTMLSpanElement
+                target.parentElement?.classList.add("selected-directory")
+                getFolderDetails("-1")
+              }}>
+              My Drive
+            </span>
           </li>
+          {/* directory tree */}
+          {tree.length !== 0 && (
+            <ul className="sidebar-nav-list">
+              {tree.map((t) => (
+                t.type === "folder" &&
+                <li className="sidebar-nav-item" key={t._id} style={{ paddingLeft: `${t.level * 10}px` }}>
+                  <span
+                    className="material-icons sidebar-extend-icon"
+                    onClick={(e) => {
+                      handleExpandTree(e, t._id)
+                    }}>
+                    play_arrow
+                  </span>
+                  <span className="material-symbols-outlined sidebar-icon">folder</span>
+                  <span
+                    className="sidebar-nav-link"
+                    onClick={(e) => {
+                      const target = e.target as HTMLSpanElement
+                      target.parentElement?.classList.add("selected-directory")
+                      getFolderDetails(t._id)
+                    }}>
+                    {t.name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
           <li className="sidebar-nav-item">
             <span className="material-icons sidebar-extend-icon">play_arrow</span>
             <span className="material-symbols-outlined sidebar-icon">devices</span>
@@ -239,7 +306,7 @@ export default function SideBar() {
               <button
                 className="btn-create"
                 onClick={() => {
-                  upload(folderName , "folder")
+                  upload(folderName, "folder")
                 }}>
                 {" "}
                 Create{" "}

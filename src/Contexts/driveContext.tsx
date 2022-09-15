@@ -18,6 +18,8 @@ interface IDriveContext {
     triggerDelete : (id : string) => void
     selected : Folder | null,
     setSelected : (React.Dispatch<React.SetStateAction<Folder | null>>),
+    tree : Folder[],
+    getTree : (id :string, expand : boolean) => void
 }
 
 const defaultContext = {
@@ -35,7 +37,8 @@ const defaultContext = {
     triggerDelete : () => null, 
     selected : null,
     setSelected : ()=> null,
-
+    tree : [],
+    getTree : ()=>null
 }
 
 export const DriveContext = createContext<IDriveContext>(defaultContext)

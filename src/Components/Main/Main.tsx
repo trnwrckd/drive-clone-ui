@@ -34,7 +34,7 @@ export default function Main() {
   }
 
   //   close modal when clicked outside
-  function handleClickOutsideModal(modal: string, target: Node): any {
+  function handleClickOutsideModal(modal: string, target: Node): void {
     // handle add btn clicked
     if (modal === "update" && updateModalOverlayRef.current && updateModalRef.current && updateModalOverlayRef.current.contains(target) && !updateModalRef.current.contains(target)) {
       setShowUpdateModal(false)
@@ -116,7 +116,7 @@ export default function Main() {
             {selected !== null && (
               <span style={{ marginRight: "30px" }}>
                 {/* update */}
-                <span id="updateIcon" className="material-symbols-outlined icon" style={{ marginRight: "15px" }}>
+                <span id="updateIcon" className="material-symbols-outlined icon" style={{ paddingRight: "15px" }}>
                   edit
                 </span>
                 {/* delete */}
@@ -126,7 +126,7 @@ export default function Main() {
               </span>
             )}
             <span style={{ marginRight: "15px" }}>
-              <span className="material-symbols-outlined icon" style={{ marginRight: "15px" }}>
+              <span className="material-symbols-outlined icon" style={{ paddingRight: "15px" }}>
                 reorder
               </span>
               <span className="material-symbols-outlined icon">info</span>
