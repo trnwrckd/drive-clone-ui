@@ -14,8 +14,10 @@ interface IDriveContext {
     getFolderDetails: (id : string) => void 
     upload: (name : string , id : string) => void 
     uploadSelectedFolder: (files : FileList) => void 
+    triggerUpdate : (id : string , folder : Folder) => void
+    triggerDelete : (id : string) => void
     selected : Folder | null,
-    setSelected : (React.Dispatch<React.SetStateAction<Folder | null>>)
+    setSelected : (React.Dispatch<React.SetStateAction<Folder | null>>),
 }
 
 const defaultContext = {
@@ -29,8 +31,11 @@ const defaultContext = {
     setUploadSuccess : ()=> false,
     upload: () => null,
     uploadSelectedFolder: () => null,
+    triggerUpdate : () => null, 
+    triggerDelete : () => null, 
     selected : null,
-    setSelected : ()=> null 
+    setSelected : ()=> null,
+
 }
 
 export const DriveContext = createContext<IDriveContext>(defaultContext)

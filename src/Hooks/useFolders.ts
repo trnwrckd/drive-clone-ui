@@ -3,6 +3,9 @@ import { Ancestor, Folder } from "../Folder";
 import axios from "axios";
 
 export const useFolders = () =>{
+
+    const apiURL = 'https://nameless-savannah-03121.herokuapp.com'
+
     const [folderList, setFolderList] = useState<Folder[]>([])
     const [folderContent, setFolderContent] = useState<Folder[]>([])
     const [currentFolder, setCurrentFolder] = useState<Folder | null>(null)
@@ -17,7 +20,7 @@ export const useFolders = () =>{
 
     // get current folder details
     const getFolderDetails = (id : string) => {
-        fetch(`http://localhost:5000/folderDetails/${id}`)
+        fetch(`${apiURL}/folderDetails/${id}`)
         .then(res => res.json())
         .then(data => {
             setCurrentFolder(data[0])
@@ -26,7 +29,7 @@ export const useFolders = () =>{
 
     // get current folder content
     const getFolderContent = (parent : string = "-1") => {
-        fetch(`http://localhost:5000/folders/${parent}`)
+        fetch(`${apiURL}/folders/${parent}`)
         .then(res => res.json())
         .then(data => setFolderContent(data))  
     }
@@ -37,10 +40,8 @@ export const useFolders = () =>{
         let ancestors : Ancestor[] 
         let parent : string 
 
-        console.log(multiple)
         // in case of multiple file upload, parent folder will be set, use that as parent
         if(parentFolderOfMultipleFileUpload !== null){
-            console.log("hit")
             level = parentFolderOfMultipleFileUpload.level + 1
             ancestors = [...parentFolderOfMultipleFileUpload.ancestors , {"id" : parentFolderOfMultipleFileUpload._id , "name" : parentFolderOfMultipleFileUpload.name}]
             parent = parentFolderOfMultipleFileUpload._id
@@ -70,7 +71,7 @@ export const useFolders = () =>{
 
 
         // post to db
-         axios.post("http://localhost:5000/folders/", folder)
+         axios.post(`${apiURL}/folders/`, folder)
         .then(res => {
             if(res.data.insertedId){
                 setUploadSuccess(true)
@@ -80,21 +81,69 @@ export const useFolders = () =>{
         if(multiple === true){
             setParentFolderOfMultipleFileUpload(folder)
         }
+
+        // update dom
+        const content = [...folderContent] 
+        content.push(folder)
+        setFolderContent(content)
     }
     
-    // upload folder
+    // upload folder with possibly multiple files inside
     const uploadSelectedFolder = (files : FileList) =>{
         // getting parent folder name
         const parent = files[0].webkitRelativePath.split("/")[0]
         upload(parent, "folder" , true)
+        // timeout because setState() isn't always updated immediately
         setTimeout(()=>{
             setFiles(files)
         },1000)
     }
 
+    // update file/folder.name
+    const triggerUpdate = (newName : string ,folder : Folder | null) =>{
+        if(folder){
+            folder.name = newName
+
+            fetch(`${apiURL}/update/${folder._id}`, {
+                method: 'PUT',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(folder)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.modifiedCount > 0) {
+                    console.log("updated" , data.modifiedCount)
+                    const newContent = folderContent.filter(f => f._id !== folder._id);
+                    newContent.push(folder)
+                    setFolderContent(newContent);
+                }
+            })
+        }
+        
+    }
+
+    // delete file/folder
+    const triggerDelete = (id : string ) =>{
+        console.log(id)
+        fetch(`${apiURL}/delete/${id}`, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.deletedCount > 0) {
+                console.log("deleted" , data.deletedCount)
+                const newContent = folderContent.filter(folder => folder._id !== id);
+                setFolderContent(newContent);
+            }
+        });
+        
+    }
+
     // set all folders
     useEffect(()=>{
-        fetch('http://localhost:5000/folders')
+        fetch('${apiURL}/folders')
         .then(res => res.json())
         .then(data => setFolderList(data))        
     }, [])
@@ -119,5 +168,5 @@ export const useFolders = () =>{
 
     return {folderList , folderContent , setFolderContent, 
         currentFolder, setCurrentFolder , getFolderDetails , upload
-        , uploadSuccess , setUploadSuccess , uploadSelectedFolder , setSelected , selected}
+        , uploadSuccess , setUploadSuccess , uploadSelectedFolder , setSelected , selected , triggerUpdate , triggerDelete}
 }
