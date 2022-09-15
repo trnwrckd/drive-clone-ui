@@ -42,6 +42,7 @@ export const useFolders = () => {
 
   // get current folder content
   const getFolderContent = (parent: string = "-1") => {
+    if(parent === "-1") getFolderDetails(parent)
     fetch(`${apiURL}/folders/${parent}`)
       .then((res) => res.json())
       .then((data) => {
