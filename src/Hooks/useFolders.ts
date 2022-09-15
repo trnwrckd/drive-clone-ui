@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Ancestor, Folder } from "../Models"
+import { Ancestor, Folder, MyDrive } from "../Models"
 import axios from "axios"
 
 export const useFolders = () => {
@@ -42,7 +42,6 @@ export const useFolders = () => {
 
   // get current folder content
   const getFolderContent = (parent: string = "-1") => {
-    if(parent === "-1") getFolderDetails(parent)
     fetch(`${apiURL}/folders/${parent}`)
       .then((res) => res.json())
       .then((data) => {
@@ -235,7 +234,10 @@ export const useFolders = () => {
   useEffect(() => {
     if (currentFolder?._id !== undefined) {
       getFolderContent(currentFolder._id)
-    } else getFolderContent()
+    } else{
+        setCurrentFolder(MyDrive)
+        getFolderContent()
+    }
   }, [currentFolder])
 
   // upload files inside folder
