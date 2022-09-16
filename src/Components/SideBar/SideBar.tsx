@@ -46,7 +46,6 @@ export default function SideBar() {
     const target = e.target as HTMLSpanElement
     // if not expanded, expand. add elements to array whose parent match this id
     if (!target.classList.contains("rotated-icon")) {
-
       target.classList.add("rotated-icon")
       getTree(id, true)
     }
@@ -169,6 +168,7 @@ export default function SideBar() {
               </div>
             </div>
 
+            {/* decor */}
             <div>
               <div className="add-modal-block">
                 <img className="img-sm" src={docs} alt="" />
@@ -197,7 +197,7 @@ export default function SideBar() {
       {/* side nav */}
       <div className="sidebar-nav">
         <ul className="sidebar-nav-list">
-          <li className={selectedDirectory && selectedDirectory._id === "-1" ? "sidebar-nav-item selected-directory" : "sidebar-nav-item"} >
+          <li className={selectedDirectory && selectedDirectory._id === "-1" ? "sidebar-nav-item selected-directory" : "sidebar-nav-item"}>
             {/* directory tree */}
             <span
               className="material-icons sidebar-extend-icon"
@@ -221,32 +221,33 @@ export default function SideBar() {
           {/* directory tree */}
           {tree.length !== 0 && (
             <ul className="sidebar-nav-list">
-              {tree.map((t) => (
-                t.type !== "file" &&
-                <li
-                key={t._id}
-                className={selectedDirectory && selectedDirectory._id === t._id ? "sidebar-dir-item selected-directory not-root" : "sidebar-dir-item"} 
-                 style={{ paddingLeft: `${t.level * 12}px` }}>
-                  <span
-                    className= "material-icons sidebar-extend-icon"
-                    onClick={(e) => {
-                      handleExpandTree(e, t._id)
-                    }}>
-                    play_arrow
-                  </span>
-                  <span className="material-icons sidebar-icon">folder</span>
-                  <span
-                    className="sidebar-nav-link"
-                    onClick={() => {
-                      setSelectedDirectory(t)
-                      getFolderDetails(t._id)
-                    }}>
-                    {t.name}
-                  </span>
-                </li>
-              ))}
+              {tree.map(
+                (t) =>
+                  t.type !== "file" && (
+                    <li key={t._id} className={selectedDirectory && selectedDirectory._id === t._id ? "sidebar-dir-item selected-directory not-root" : "sidebar-dir-item"} style={{ paddingLeft: `${t.level * 12}px` }}>
+                      <span
+                        className="material-icons sidebar-extend-icon"
+                        onClick={(e) => {
+                          handleExpandTree(e, t._id)
+                        }}>
+                        play_arrow
+                      </span>
+                      <span className="material-icons sidebar-icon">folder</span>
+                      <span
+                        className="sidebar-nav-link"
+                        onClick={() => {
+                          setSelectedDirectory(t)
+                          getFolderDetails(t._id)
+                        }}>
+                        {t.name}
+                      </span>
+                    </li>
+                  )
+              )}
             </ul>
           )}
+
+          {/* decor */}
           <li className="sidebar-nav-item">
             <span className="material-icons sidebar-extend-icon">play_arrow</span>
             <span className="material-symbols-outlined sidebar-icon">devices</span>

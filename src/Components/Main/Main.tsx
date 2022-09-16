@@ -8,7 +8,7 @@ import "./Main.css"
 import Spinner from "../Shared/Spinner/Spinner"
 
 export default function Main() {
-  const { currentFolder, folderContent, setCurrentFolder, getFolderDetails, selected, setSelected, triggerUpdate, triggerDelete ,loading} = useContext(DriveContext)
+  const { currentFolder, folderContent, setCurrentFolder, getFolderDetails, selected, setSelected, triggerUpdate, triggerDelete, loading } = useContext(DriveContext)
 
   // show update and delete modal state
   const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false)
@@ -30,15 +30,14 @@ export default function Main() {
         setShowUpdateModal(true)
       } else if (target.id === "deleteIcon") {
         setShowDeleteModal(true)
-      }
-      else if(target.id !== "btn-rename" && target.id !== "btn-delete" && !updateModalOverlayRef.current?.contains(target) && !deleteModalOverlayRef.current?.contains(target)){
+      } else if (target.id !== "btn-rename" && target.id !== "btn-delete" && !updateModalOverlayRef.current?.contains(target) && !deleteModalOverlayRef.current?.contains(target)) {
         setSelected(null)
       }
     }
   }
 
   //   close modal when clicked outside
-  const handleClickOutsideModal = (modal: string, target: Node): void =>{
+  const handleClickOutsideModal = (modal: string, target: Node): void => {
     // handle update btn clicked
     if (modal === "update" && updateModalOverlayRef.current && updateModalRef.current && updateModalOverlayRef.current.contains(target) && !updateModalRef.current.contains(target)) {
       setShowUpdateModal(false)
@@ -92,9 +91,11 @@ export default function Main() {
                 <span className="material-symbols-outlined">arrow_drop_down</span>
               </span>
             )}
-            {/* if we're inside, folder, map it's ancestors as current route */}
-            {/* if ancestors.length <=4, we can show them all */}
-            {currentFolder?.ancestors !== undefined && currentFolder.ancestors.length <=4 &&
+
+            {/* if we're inside a folder, map it's ancestors as current route */}
+            {/* if ancestors.length <=4, show them all */}
+            {currentFolder?.ancestors !== undefined &&
+              currentFolder.ancestors.length <= 4 &&
               currentFolder?.ancestors.map((a) => (
                 <span
                   className="route-link flex align-center"
@@ -105,11 +106,11 @@ export default function Main() {
                   <span className="route-name">{a.name}</span>
                   <span className="material-symbols-outlined">keyboard_arrow_right</span>
                 </span>
-              ))
-            }
-            {/* if ancestors.length >= 5, we show the first one and the last two */}
-            {currentFolder?.ancestors !== undefined && currentFolder.ancestors.length >=5 &&
-                <>
+              ))}
+
+            {/* if ancestors.length >= 5, show the first one and the last one */}
+            {currentFolder?.ancestors !== undefined && currentFolder.ancestors.length >= 5 && (
+              <>
                 {/* first one */}
                 <span
                   className="route-link flex align-center"
@@ -129,15 +130,15 @@ export default function Main() {
                 {/* parent of current folder */}
                 <span
                   className="route-link flex align-center"
-                  key={currentFolder.ancestors[currentFolder.ancestors.length-1].id}
+                  key={currentFolder.ancestors[currentFolder.ancestors.length - 1].id}
                   onClick={() => {
-                    getFolderDetails(currentFolder.ancestors[currentFolder.ancestors.length-1].id)
+                    getFolderDetails(currentFolder.ancestors[currentFolder.ancestors.length - 1].id)
                   }}>
-                  <span className="route-name">{currentFolder.ancestors[currentFolder.ancestors.length-1].name}</span>
+                  <span className="route-name">{currentFolder.ancestors[currentFolder.ancestors.length - 1].name}</span>
                   <span className="material-symbols-outlined">keyboard_arrow_right</span>
                 </span>
-                </>
-            }
+              </>
+            )}
             {/* show current folder in route */}
             {currentFolder?.name !== undefined && (
               <span className="flex align-center route-current">
@@ -170,92 +171,100 @@ export default function Main() {
             </span>
           </div>
         </div>
-        
+
         {/* main section begins */}
-        {loading && <Spinner/>}
-        {/* show contents of current folder */}
-        { !loading && (currentFolder === null || 
-        (currentFolder._id === "-1" && !folderContent.length)) ? <NoFiles/> : (
-            folderContent.length ? 
-            <div>
-            {folderContent.filter(f => f.type === "folder").length !== 0 && 
-            // display folders first
-            <>
-            <div className="grid-section-heading">Folders</div>
-            <div className="folder-grid">
-              {folderContent.map(
-                (f) =>
-                  f.type === "folder" && (
-                    <div
-                      key={f._id}
-                      // if selected
-                      className={selected && selected._id === f._id ? "grid-item grid-item-selected" : "grid-item"}
-                      onDoubleClick={() => {
-                        if (f.type === "folder") {
-                          setCurrentFolder(f)
-                          localStorage.setItem("currentFolder", JSON.stringify(f))
-                        }
-                      }}
-                      onClick={() => {
-                        setSelected(f)
-                      }}>
-                      <OutsideClickHandler
-                        onOutsideClick={(e) => {
-                          handleClickOutsideSelectedFolder(e.target, f)
-                        }}>
-                        <span className={"flex align-center"}>
-                          <span className="material-icons">folder</span>
-                          <span style={{ marginLeft: "15px" }} className="grid-item-name">
-                            {f.name.length > 21 ? <>{f.name.slice(0,20)}...</> : f.name}
-                          </span>
-                        </span>
-                      </OutsideClickHandler>
-                    </div>
-                  )
-              )}
-            </div>
-            </>}
+        {/* if loading, show spinner */}
+        {loading && <Spinner />}
+        {/* else, show contents of current folder */}
+        {!loading && 
+        (currentFolder === null || (currentFolder._id === "-1" && !folderContent.length)) ? (
+        // for root directory
+        <NoFiles />
+        ) 
+          : folderContent.length ? (
+          <div>
+            {folderContent.filter((f) => f.type === "folder").length !== 0 && (
+              // display folders first
+              <>
+                <div className="grid-section-heading">Folders</div>
+                <div className="folder-grid">
+                  {folderContent.map(
+                    (f) =>
+                      f.type === "folder" && (
+                        <div
+                          key={f._id}
+                          // if selected
+                          className={selected && selected._id === f._id ? "grid-item grid-item-selected" : "grid-item"}
+                          onDoubleClick={() => {
+                            if (f.type === "folder") {
+                              setCurrentFolder(f)
+                              localStorage.setItem("currentFolder", JSON.stringify(f))
+                            }
+                          }}
+                          onClick={() => {
+                            setSelected(f)
+                          }}>
+                          <OutsideClickHandler
+                            onOutsideClick={(e) => {
+                              handleClickOutsideSelectedFolder(e.target, f)
+                            }}>
+                            <span className={"flex align-center"}>
+                              <span className="material-icons">folder</span>
+                              <span style={{ marginLeft: "15px" }} className="grid-item-name">
+                                {f.name.length > 21 ? <>{f.name.slice(0, 20)}...</> : f.name}
+                              </span>
+                            </span>
+                          </OutsideClickHandler>
+                        </div>
+                      )
+                  )}
+                </div>
+              </>
+            )}
 
             {/* display files */}
-            {folderContent.filter(f => f.type === "file").length !== 0 && 
-            <>
-              <div className="grid-section-heading">Files</div>
-            
-            <div className="folder-grid">
-              {folderContent.map(
-                (f) =>
-                  f.type === "file" && (
-                    <div
-                      key={f._id}
-                      // if selected
-                      className={selected && selected._id === f._id ? "grid-item grid-item-selected" : "grid-item"}
-                      onDoubleClick={() => {
-                        console.log(selected?._id)
-                        if (f.type === "folder") {
-                          setCurrentFolder(f)
-                          localStorage.setItem("currentFolder", JSON.stringify(f))
-                        }
-                      }}
-                      onClick={() => {
-                        setSelected(f)
-                      }}>
-                      <OutsideClickHandler
-                        onOutsideClick={(e) => {
-                          handleClickOutsideSelectedFolder(e.target, f)
-                        }}>
-                        <span className={"flex align-center"}>
-                          <span className="material-icons">description</span>
-                          <span style={{ marginLeft: "15px" }} className="grid-item-name">
-                            {f.name.length > 21 ? <>{f.name.slice(0,20)}...</> : f.name}
-                          </span>
-                        </span>
-                      </OutsideClickHandler>
-                    </div>
-                  )
-              )}
-            </div>
-            </>}
-          </div> : <></>
+            {folderContent.filter((f) => f.type === "file").length !== 0 && (
+              <>
+                <div className="grid-section-heading">Files</div>
+
+                <div className="folder-grid">
+                  {folderContent.map(
+                    (f) =>
+                      f.type === "file" && (
+                        <div
+                          key={f._id}
+                          // if selected
+                          className={selected && selected._id === f._id ? "grid-item grid-item-selected" : "grid-item"}
+                          onDoubleClick={() => {
+                            console.log(selected?._id)
+                            if (f.type === "folder") {
+                              setCurrentFolder(f)
+                              localStorage.setItem("currentFolder", JSON.stringify(f))
+                            }
+                          }}
+                          onClick={() => {
+                            setSelected(f)
+                          }}>
+                          <OutsideClickHandler
+                            onOutsideClick={(e) => {
+                              handleClickOutsideSelectedFolder(e.target, f)
+                            }}>
+                            <span className={"flex align-center"}>
+                              <span className="material-icons">description</span>
+                              <span style={{ marginLeft: "15px" }} className="grid-item-name">
+                                {f.name.length > 21 ? <>{f.name.slice(0, 20)}...</> : f.name}
+                              </span>
+                            </span>
+                          </OutsideClickHandler>
+                        </div>
+                      )
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <></>
         )}
       </div>
       <Addons></Addons>
