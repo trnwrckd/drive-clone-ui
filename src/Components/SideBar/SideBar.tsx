@@ -222,10 +222,11 @@ export default function SideBar() {
           {tree.length !== 0 && (
             <ul className="sidebar-nav-list">
               {tree.map((t) => (
-                t.type === "folder" &&
-                <li 
+                t.type !== "file" &&
+                <li
+                key={t._id}
                 className={selectedDirectory && selectedDirectory._id === t._id ? "sidebar-dir-item selected-directory not-root" : "sidebar-dir-item"} 
-                key={t._id} style={{ paddingLeft: `${t.level * 12}px` }}>
+                 style={{ paddingLeft: `${t.level * 12}px` }}>
                   <span
                     className= "material-icons sidebar-extend-icon"
                     onClick={(e) => {

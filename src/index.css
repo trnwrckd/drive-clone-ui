@@ -1,6 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
+:root{
+  --bg-primary : white;
+  --color: #5f6368;
+  --search-bar: #F1F3F4;
+  --box-shadow: #3c40434d;
+  --modal-overlay: #00000066;
+  --light-blue : #e8f0ff;
+  --medium-blue : #185abc;
+  --dark-blue : #0202db;
+  --selected : #e8f0ff;
+  --modal-input-border : black;
+}
 body {
+  background-color: var(--bg-primary);
   margin: 0;
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -9,6 +22,6 @@ body {
 
 button{
   font-family: 'Roboto', sans-serif;
-  color: rgb(95, 99, 104);
+  color: var(--color);
 }
 

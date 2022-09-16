@@ -16,11 +16,11 @@
 .app-title{
     font-size: 1.5rem;
     padding: 0 10px;
-    color: darkslategray;
+    color: var(--color);
 }
 
 .search-bar{
-    background: #F1F3F4;
+    background: var(--bg-secondary);
     width: 85%;
     border-radius: 8px;
     padding: 7.5px 10px;
@@ -31,7 +31,7 @@
     flex-grow: 1;
     text-align: left;
     padding: 0 10px;
-    color: rgba(0, 0, 0, .54);
+    color: var(--color);
 }
 
 

@@ -17,7 +17,7 @@
 }
 
 .route-current:hover, .route-link:hover .route-name{
-    background-color: #d3d3d34d;
+    background-color: var(--bg-secondary);
     cursor: pointer;
     border-radius: 7px;
 }
@@ -52,10 +52,10 @@
     background-color: #d3d3d34d;
 }
 .grid-item-selected{
-    background-color: #e8f0ff;
+    background-color: var(--selected);
 }
 .grid-item-selected .grid-item-name{
-    color: #185ABC;
+    color: var(--medium-blue);
 }
 
 /* modal btns */
@@ -71,6 +71,7 @@
     cursor: pointer;
     text-transform: uppercase;
     transition: .5s all;
+    box-shadow: 0px 2px 0px 1px transparent;
 }
 .btn-cancel-rename{
     margin-right: 15px;
@@ -78,7 +79,7 @@
 
 
 .btn-cancel-rename:hover, .btn-rename:hover , .btn-delete:hover{
-    box-shadow: 0px 2px 0px 1px lightgray;
+    box-shadow: 0px 2px 0px 1px var(--box-shadow);
 }
 .btn-rename{
     background-color: #185ABC;

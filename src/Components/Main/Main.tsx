@@ -5,7 +5,6 @@ import { Folder } from "../../Models"
 import Addons from "./Addons/Addons"
 import NoFiles from "./NoFiles/NoFiles"
 import "./Main.css"
-import { findAncestor } from "typescript"
 
 export default function Main() {
   const { currentFolder, folderContent, setCurrentFolder, getFolderDetails, selected, setSelected, triggerUpdate, triggerDelete } = useContext(DriveContext)
@@ -180,7 +179,8 @@ export default function Main() {
             <div>
             {folderContent.filter(f => f.type === "folder").length !== 0 && 
             // display folders first
-            <div className="grid-section-heading">Folders</div>}
+            <>
+            <div className="grid-section-heading">Folders</div>
             <div className="folder-grid">
               {folderContent.map(
                 (f) =>
@@ -213,10 +213,12 @@ export default function Main() {
                   )
               )}
             </div>
+            </>}
 
             {/* display files */}
             {folderContent.filter(f => f.type === "file").length !== 0 && 
-            <div className="grid-section-heading">Files</div>}
+            <>
+              <div className="grid-section-heading">Files</div>
             
             <div className="folder-grid">
               {folderContent.map(
@@ -251,9 +253,8 @@ export default function Main() {
                   )
               )}
             </div>
+            </>}
           </div> : <></>
-           
-          
         )}
       </div>
       <Addons></Addons>
