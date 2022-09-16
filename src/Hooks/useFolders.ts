@@ -5,16 +5,18 @@ import axios from "axios"
 export const useFolders = () => {
   const apiURL = "https://nameless-savannah-03121.herokuapp.com"
 
+  // get data from localstorage
   let contentFromLocalStorage = localStorage.getItem("folderContent")
   let currentFolderFromLocalStorage = localStorage.getItem("currentFolder")
   let treeFromLocalStorage = localStorage.getItem("tree")
 
+  // init states
   const [folderList, setFolderList] = useState<Folder[]>([])
   const [folderContent, setFolderContent] = useState<Folder[]>(contentFromLocalStorage ? JSON.parse(contentFromLocalStorage) : [])
   const [currentFolder, setCurrentFolder] = useState<Folder | null>(currentFolderFromLocalStorage ? JSON.parse(currentFolderFromLocalStorage) : null)
-
+  // single file upload success
   const [uploadSuccess, setUploadSuccess] = useState<boolean>(false)
-
+  // folder with possibly multiple children
   const [parentFolderOfMultipleFileUpload, setParentFolderOfMultipleFileUpload] = useState<Folder | null>(null)
   const [files, setFiles] = useState<FileList | null>(null)
   // directory tree
@@ -22,7 +24,7 @@ export const useFolders = () => {
   // select for update/delete
   const [selected, setSelected] = useState<Folder | null>(null)
   // loading state
-  const [loading , setLoading] = useState<boolean> (false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   var folder: Folder
 
@@ -64,7 +66,7 @@ export const useFolders = () => {
     let parent: string
 
     // in case of multiple file upload, parent folder will be set, use that as parent
-    if (parentFolderOfMultipleFileUpload !== null && parentFolderOfMultipleFileUpload !== undefined ) {
+    if (parentFolderOfMultipleFileUpload !== null && parentFolderOfMultipleFileUpload !== undefined) {
       level = parentFolderOfMultipleFileUpload.level + 1
       ancestors = [...parentFolderOfMultipleFileUpload.ancestors, { id: parentFolderOfMultipleFileUpload._id, name: parentFolderOfMultipleFileUpload.name }]
       parent = parentFolderOfMultipleFileUpload._id
@@ -104,22 +106,22 @@ export const useFolders = () => {
     }
 
     // update dom
-    if(currentFolder?._id === folder.parent){
-        const content = [...folderContent]
-        content.push(folder)
-        setFolderContent(content)
-        localStorage.setItem("folderContent", JSON.stringify(content))
+    if (currentFolder?._id === folder.parent) {
+      const content = [...folderContent]
+      content.push(folder)
+      setFolderContent(content)
+      localStorage.setItem("folderContent", JSON.stringify(content))
 
-        // if current folders' parent exists in tree, add to tree
-        if(folder.type === "folder"){
-            const newTree = [...tree]
-            if(newTree.find((el) => el.parent === folder.parent) !== undefined){
-                const index = newTree.findIndex((t) => t._id === folder.parent) 
-                newTree.splice(index+1,0,folder)  
-                setTree(newTree)
-                localStorage.setItem("tree", JSON.stringify(newTree))
-            }
+      // if current folders' parent exists in tree, add to tree
+      if (folder.type === "folder") {
+        const newTree = [...tree]
+        if (newTree.find((el) => el.parent === folder.parent) !== undefined) {
+          const index = newTree.findIndex((t) => t._id === folder.parent)
+          newTree.splice(index + 1, 0, folder)
+          setTree(newTree)
+          localStorage.setItem("tree", JSON.stringify(newTree))
         }
+      }
     }
   }
 
@@ -149,16 +151,19 @@ export const useFolders = () => {
         .then((res) => res.json())
         .then((data) => {
           if (data.modifiedCount > 0) {
-            console.log("updated", data.modifiedCount)
+            console.log("updated", data.modifiedCount) //log
+
+            // update dom and localstorage
             const newContent = folderContent.filter((f) => f._id !== folder._id)
             newContent.push(folder)
             setFolderContent(newContent)
             localStorage.setItem("folderContent", JSON.stringify(newContent))
+
             // if updated folder exist in tree, update tree too
             if (tree.length && tree.find((el) => el._id === folder._id) !== undefined) {
-            const index = tree.findIndex((t) => t._id === folder._id)
+              const index = tree.findIndex((t) => t._id === folder._id)
               const newTree = [...tree]
-              // insert at exact index
+              // insert at exact index, remove previous record
               newTree.splice(index, 1, folder)
               setTree(newTree)
               localStorage.setItem("tree", JSON.stringify(newTree))
@@ -176,13 +181,17 @@ export const useFolders = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.deletedCount > 0) {
-          console.log("deleted", data.deletedCount)
-          const newContent = folderContent.filter((folder) => folder._id !== id && folder.ancestors.every(a=>a.id !== id))
+          console.log("deleted", data.deletedCount) //log
+
+          // update dom and localstorage
+          const newContent = folderContent.filter((folder) => folder._id !== id && folder.ancestors.every((a) => a.id !== id))
           setFolderContent(newContent)
           localStorage.setItem("folderContent", JSON.stringify(newContent))
-          //   if deleted folder exists in tree, update
+
+          // if deleted folder exists in tree, update folder
+          // find children and update their ancestry 
           const newTree = tree.filter((folder) => {
-            return folder._id !== id && folder.ancestors.every(a=>a.id !== id)
+            return folder._id !== id && folder.ancestors.every((a) => a.id !== id)
           })
           setTree(newTree)
           localStorage.setItem("tree", JSON.stringify(newTree))
@@ -201,7 +210,7 @@ export const useFolders = () => {
           if (tree.length > 0) {
             // find parent index
             const index = tree.findIndex((t) => {
-              return t._id === parent 
+              return t._id === parent
             })
             const newTree = [...tree]
 
@@ -213,10 +222,12 @@ export const useFolders = () => {
               }
             })
 
+            // set
             setTree(newTree)
             localStorage.setItem("tree", JSON.stringify(newTree))
           } else {
-            data = data.filter((d : Folder) => d.type === "folder")
+            // get folders and set
+            data = data.filter((d: Folder) => d.type === "folder")
             setTree(data)
             localStorage.setItem("tree", JSON.stringify(data))
           }
@@ -224,9 +235,11 @@ export const useFolders = () => {
     }
     // shrink tree
     else {
+      // remove every node that has this one as parent
       const newTree = tree.filter((elem) => {
         return elem.ancestors.every((e) => e.id !== parent)
       })
+      // set
       setTree(newTree)
       localStorage.setItem("tree", JSON.stringify(newTree))
     }
@@ -245,9 +258,9 @@ export const useFolders = () => {
     setLoading(true)
     if (currentFolder?._id !== undefined) {
       getFolderContent(currentFolder._id)
-    } else{
-        setCurrentFolder(MyDrive)
-        getFolderContent()
+    } else {
+      setCurrentFolder(MyDrive)
+      getFolderContent()
     }
   }, [currentFolder])
 
@@ -261,5 +274,5 @@ export const useFolders = () => {
     setParentFolderOfMultipleFileUpload(null)
   }, [files])
 
-  return { folderList, folderContent, setFolderContent, currentFolder, setCurrentFolder, getFolderDetails, upload, uploadSuccess, setUploadSuccess, uploadSelectedFolder, setSelected, selected, triggerUpdate, triggerDelete, tree, getTree ,loading}
+  return { folderList, folderContent, setFolderContent, currentFolder, setCurrentFolder, getFolderDetails, upload, uploadSuccess, setUploadSuccess, uploadSelectedFolder, setSelected, selected, triggerUpdate, triggerDelete, tree, getTree, loading }
 }
