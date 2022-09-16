@@ -19,7 +19,8 @@ interface IDriveContext {
     selected : Folder | null,
     setSelected : (React.Dispatch<React.SetStateAction<Folder | null>>),
     tree : Folder[],
-    getTree : (id :string, expand : boolean) => void
+    getTree : (id :string, expand : boolean) => void,
+    loading : boolean
 }
 
 const defaultContext = {
@@ -38,7 +39,8 @@ const defaultContext = {
     selected : null,
     setSelected : ()=> null,
     tree : [],
-    getTree : ()=>null
+    getTree : ()=>null,
+    loading: false
 }
 
 export const DriveContext = createContext<IDriveContext>(defaultContext)

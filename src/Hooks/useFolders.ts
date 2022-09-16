@@ -19,13 +19,18 @@ export const useFolders = () => {
   const [files, setFiles] = useState<FileList | null>(null)
   // directory tree
   const [tree, setTree] = useState<Folder[]>(treeFromLocalStorage ? JSON.parse(treeFromLocalStorage) : [])
-
+  // select for update/delete
   const [selected, setSelected] = useState<Folder | null>(null)
+  // loading state
+  const [loading , setLoading] = useState<boolean> (false)
 
   var folder: Folder
 
   // get current folder details
   const getFolderDetails = (id: string) => {
+    setLoading(true)
+    setCurrentFolder(null)
+
     fetch(`${apiURL}/folderDetails/${id}`)
       .then((res) => res.json())
       .then((data) => {
@@ -46,6 +51,7 @@ export const useFolders = () => {
       .then((res) => res.json())
       .then((data) => {
         setSelected(null)
+        setLoading(false)
         setFolderContent(data)
         localStorage.setItem("folderContent", JSON.stringify(data))
       })
@@ -235,6 +241,8 @@ export const useFolders = () => {
 
   // find content by parent ID
   useEffect(() => {
+    setFolderContent([])
+    setLoading(true)
     if (currentFolder?._id !== undefined) {
       getFolderContent(currentFolder._id)
     } else{
@@ -253,5 +261,5 @@ export const useFolders = () => {
     setParentFolderOfMultipleFileUpload(null)
   }, [files])
 
-  return { folderList, folderContent, setFolderContent, currentFolder, setCurrentFolder, getFolderDetails, upload, uploadSuccess, setUploadSuccess, uploadSelectedFolder, setSelected, selected, triggerUpdate, triggerDelete, tree, getTree }
+  return { folderList, folderContent, setFolderContent, currentFolder, setCurrentFolder, getFolderDetails, upload, uploadSuccess, setUploadSuccess, uploadSelectedFolder, setSelected, selected, triggerUpdate, triggerDelete, tree, getTree ,loading}
 }

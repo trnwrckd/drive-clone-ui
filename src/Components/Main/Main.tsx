@@ -5,9 +5,10 @@ import { Folder } from "../../Models"
 import Addons from "./Addons/Addons"
 import NoFiles from "./NoFiles/NoFiles"
 import "./Main.css"
+import Spinner from "../Shared/Spinner/Spinner"
 
 export default function Main() {
-  const { currentFolder, folderContent, setCurrentFolder, getFolderDetails, selected, setSelected, triggerUpdate, triggerDelete } = useContext(DriveContext)
+  const { currentFolder, folderContent, setCurrentFolder, getFolderDetails, selected, setSelected, triggerUpdate, triggerDelete ,loading} = useContext(DriveContext)
 
   // show update and delete modal state
   const [showUpdateModal, setShowUpdateModal] = useState<boolean>(false)
@@ -38,11 +39,11 @@ export default function Main() {
 
   //   close modal when clicked outside
   const handleClickOutsideModal = (modal: string, target: Node): void =>{
-    // handle add btn clicked
+    // handle update btn clicked
     if (modal === "update" && updateModalOverlayRef.current && updateModalRef.current && updateModalOverlayRef.current.contains(target) && !updateModalRef.current.contains(target)) {
       setShowUpdateModal(false)
     }
-    // handle create new folder modal
+    // handle delete btn clicked
     if (modal === "delete" && deleteModalOverlayRef.current && deleteModalRef.current && deleteModalOverlayRef.current.contains(target) && !deleteModalRef.current?.contains(target)) {
       setShowDeleteModal(false)
     }
@@ -171,10 +172,10 @@ export default function Main() {
         </div>
         
         {/* main section begins */}
+        {loading && <Spinner/>}
         {/* show contents of current folder */}
-        { currentFolder === undefined || currentFolder === null || (currentFolder._id === "-1" && !folderContent.length) ? (
-          <NoFiles />
-        ) : (
+        { !loading && (currentFolder === null || 
+        (currentFolder._id === "-1" && !folderContent.length)) ? <NoFiles/> : (
             folderContent.length ? 
             <div>
             {folderContent.filter(f => f.type === "folder").length !== 0 && 

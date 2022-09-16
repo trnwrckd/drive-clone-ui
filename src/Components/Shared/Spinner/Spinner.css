@@ -1,0 +1,40 @@
+.spinner-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .9rem;
+  padding: 2rem 0;
+}
+
+.g-loading {
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  border: .3em solid #EA4335;
+  border-bottom: .3em solid transparent;
+
+  animation: g-color-switch 1s steps(1) infinite, g-rotate 1.5s linear infinite forwards;
+}
+
+@keyframes g-color-switch {
+  25% {
+    border: .3em solid #34A853;
+    border-bottom: .3em solid transparent
+  }
+
+  50% {
+    border: .3em solid #FBBC05;
+    border-bottom: .3em solid transparent
+  }
+
+  75% {
+    border: .3em solid #4285F4;
+    border-bottom: .3em solid transparent
+  }
+}
+
+@keyframes g-rotate {
+  to {
+    transform: rotate(360deg)
+  }
+}
