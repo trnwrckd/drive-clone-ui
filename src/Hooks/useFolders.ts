@@ -103,13 +103,16 @@ export const useFolders = () => {
         content.push(folder)
         setFolderContent(content)
         localStorage.setItem("folderContent", JSON.stringify(content))
+
         // if current folders' parent exists in tree, add to tree
-        const newTree = [...tree]
-        if(newTree.find((el) => el._id === folder.parent) !== undefined){
-            const index = newTree.findIndex((t) => t._id === folder.parent) 
-            newTree.splice(index+1,0,folder)  
-            setTree(newTree)
-            localStorage.setItem("tree", JSON.stringify(newTree))
+        if(folder.type === "folder"){
+            const newTree = [...tree]
+            if(newTree.find((el) => el.parent === folder.parent) !== undefined){
+                const index = newTree.findIndex((t) => t._id === folder.parent) 
+                newTree.splice(index+1,0,folder)  
+                setTree(newTree)
+                localStorage.setItem("tree", JSON.stringify(newTree))
+            }
         }
     }
   }
@@ -161,7 +164,6 @@ export const useFolders = () => {
 
   // delete file/folder
   const triggerDelete = (id: string) => {
-    console.log(id)
     fetch(`${apiURL}/folders/${id}`, {
       method: "DELETE",
     })
@@ -193,7 +195,7 @@ export const useFolders = () => {
           if (tree.length > 0) {
             // find parent index
             const index = tree.findIndex((t) => {
-              return t._id === parent
+              return t._id === parent 
             })
             const newTree = [...tree]
 
@@ -208,6 +210,7 @@ export const useFolders = () => {
             setTree(newTree)
             localStorage.setItem("tree", JSON.stringify(newTree))
           } else {
+            data = data.filter((d : Folder) => d.type === "folder")
             setTree(data)
             localStorage.setItem("tree", JSON.stringify(data))
           }
